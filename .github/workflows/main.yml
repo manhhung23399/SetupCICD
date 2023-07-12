@@ -1,0 +1,39 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main  
+  pull_request:
+    branches:
+      - main  
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: '17'
+
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        sdk-platform: 'platforms;android-33'   
+
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug
+      
+    - name: Run unit tests
+      run: ./gradlew testDebugUnitTest
+
+    - name: Generate APK
+      run: ./gradlew bundleDebug
+
+   
