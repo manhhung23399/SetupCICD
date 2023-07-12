@@ -18,7 +18,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Set up JDK
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v3
       with:
           distribution: 'temurin'
           java-version: '17'
@@ -40,7 +40,7 @@ jobs:
       run: ./gradlew testDebugUnitTest
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: App Artifact
         path: app/build/outputs/apk/debug/app-debug.apk
