@@ -15,17 +15,17 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
 
     - name: Set up JDK
-      uses: actions/setup-java@v2
+      uses: actions/setup-java@v3
       with:
           distribution: 'temurin'
           java-version: '17'
           cache: 'gradle'
 
     - name: Set up Android SDK
-      uses: android-actions/setup-android@v2
+      uses: android-actions/setup-android@v3
       with:
         sdk-platform: 'platforms;android-33'  # Change to your desired SDK platform version
         ndk-version: '25.2.9519653'  # Change to your desired NDK version
@@ -40,7 +40,7 @@ jobs:
       run: ./gradlew testDebugUnitTest
 
     - name: Upload artifacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: App Artifact
         path: app/build/outputs/apk/debug/app-debug.apk
