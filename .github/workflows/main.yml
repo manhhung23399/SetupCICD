@@ -1,0 +1,44 @@
+name: Android Build and Upload Artifact
+
+on:
+  push:
+    branches:
+      - main  # Change to your desired branch name
+  pull_request:
+    branches:
+      - main  # Change to your desired branch name
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up JDK
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        sdk-platform: 'platforms;android-29'  # Change to your desired SDK platform version
+        ndk-version: '22.1.7171670'  # Change to your desired NDK version
+
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug
+
+    - name: Generate APK
+      run: ./gradlew bundleDebug
+
+    - name: Run unit tests
+      run: ./gradlew testDebugUnitTest
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: App Artifact
+        path: app/build/outputs/apk/debug/app-debug.apk
