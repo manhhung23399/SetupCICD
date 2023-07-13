@@ -1,0 +1,57 @@
+name: Android Build and Upload Artifact
+
+on:
+  push:
+    branches:
+      - main  # Change to your desired branch name
+  pull_request:
+    branches:
+      - main  # Change to your desired branch name
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up JDK
+      uses: actions/setup-java@v3
+      with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+    - name: Set up Android SDK
+      uses: android-actions/setup-android@v2
+
+    - name: Build with Gradle
+      run: ./gradlew assembleDebug
+
+    - name: Generate APK
+      run: ./gradlew bundleDebug
+
+    - name: Run unit tests
+      run: ./gradlew testDebugUnitTest
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: App Artifact
+        path: app/build/outputs/apk/debug/app-debug.apk
+        
+    - name: Run Coverage
+      run: |
+        chmod +x gradlew
+        ./gradlew testCoverage
+          
+    - name: Add coverage to PR
+      id: jacoco
+      uses: madrapps/jacoco-report@v1.3
+      with:
+        paths: ${{ github.workspace }}/build/reports/jacoco/testCoverage/testCoverage.xml
+        token: ${{ secrets.GITHUB_TOKEN }}
+        min-coverage-overall: 40
+        min-coverage-changed-files: 60
